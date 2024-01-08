@@ -1,0 +1,3 @@
+[submodule "vendor/speedy"]
+	path = vendor/speedy
+	url = https://github.com/gnostr-org/speedy
