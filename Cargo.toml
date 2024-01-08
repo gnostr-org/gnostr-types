@@ -7,7 +7,7 @@ description = "Types for nostr protocol handling"
 repository = "https://github.com/mikedilger/nostr-types"
 documentation = "https://docs.rs/nostr-types"
 readme = "README.md"
-keywords = [ "nostr" ]
+keywords = [ "nostr", "gnostr" ]
 license = "MIT"
 
 [features]
