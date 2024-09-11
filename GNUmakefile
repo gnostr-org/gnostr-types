@@ -29,7 +29,7 @@ TRIPLET                                 :=aarch64-linux-gnu
 export TRIPLET
 endif
 
-## HOMEBREW                                :=$(shell which brew || false)
+HOMEBREW                                :=$(shell which brew || false)
 
 RUSTUP_INIT_SKIP_PATH_CHECK=yes
 TOOLCHAIN=stable
@@ -52,9 +52,8 @@ export RUSTUP_INIT_SKIP_PATH_CHECK
 export TOOLCHAIN
 export Z
 
-#SUBMODULES=$(shell cat .gitmodules | grep path | cut -d ' ' -f 3)
-#| sed \'s/cli//g\' | sed \'s/bits//g\')
-#export SUBMODULES
+SUBMODULES=:$(shell touch .gitmodules && cat .gitmodules >/dev/null | grep path | cut -d ' ' -f 3)
+export SUBMODULES
 
 ifeq ($(verbose),true)
 VERBOSE                                 :=-v
@@ -77,28 +76,28 @@ BIND                                    :=$(bind)
 endif
 export BIND
 
-## ifeq ($(token),)
-## GITHUB_TOKEN                             =$(shell touch ~/GITHUB_TOKEN.txt && cat ~/GITHUB_TOKEN.txt || echo "0")
-## else
-## GITHUB_TOKEN                            :=$(shell echo $(token))
-## endif
-## export GITHUB_TOKEN
+ifeq ($(token),)
+GITHUB_TOKEN                             =$(shell touch ~/GITHUB_TOKEN.txt && cat ~/GITHUB_TOKEN.txt || echo "0")
+else
+GITHUB_TOKEN                            :=$(shell echo $(token))
+endif
+export GITHUB_TOKEN
 
-## export $(cat ~/GITHUB_TOKEN) && make act
+export $(cat ~/GITHUB_TOKEN) && make act
 
-## PYTHON                                  := $(shell which python)
-## export PYTHON
-## PYTHON2                                 := $(shell which python2)
-## export PYTHON2
-## PYTHON3                                 := $(shell which python3)
-## export PYTHON3
-## 
-## PIP                                     := $(shell which pip)
-## export PIP
-## PIP2                                    := $(shell which pip2)
-## export PIP2
-## PIP3                                    := $(shell which pip3)
-## export PIP3
+PYTHON                                  := $(shell which python)
+export PYTHON
+PYTHON2                                 := $(shell which python2)
+export PYTHON2
+PYTHON3                                 := $(shell which python3)
+export PYTHON3
+
+PIP                                     := $(shell which pip)
+export PIP
+PIP2                                    := $(shell which pip2)
+export PIP2
+PIP3                                    := $(shell which pip3)
+export PIP3
 
 PYTHON_VENV                             := $(shell python -c "import sys; sys.stdout.write('1') if hasattr(sys, 'base_prefix') else sys.stdout.write('0')")
 PYTHON3_VENV                            := $(shell python3 -c "import sys; sys.stdout.write('1') if hasattr(sys, 'real_prefix') else sys.stdout.write('0')")
@@ -169,7 +168,7 @@ export GIT_REPO_PATH
 
 
 
-.PHONY: - help
+.PHONY:- help
 -:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?##/ {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo
@@ -178,6 +177,14 @@ more:## 	more help
 	#$(MAKE) -f Makefile help
 
 -include Makefile
+
+## 	:
+
+.PHONY:docs
+docs:cargo-docs ## 	docs
+tests:## 	tests
+##
+#for bin in $$(ls target/release/mempool-space*); do ./$${bin/.d} 2>/dev/null; done
 
 ##initialize
 ##	git submodule update --init --recursive
@@ -371,19 +378,19 @@ endif
 	bash -c "[ '$(shell uname -m)' == 'i386' ] && echo 'is i386' || echo 'not i386';"
 
 ##	install rustup sequence
-	type -P rustup || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y --no-modify-path --default-toolchain stable --profile default #& . "$(HOME)/.cargo/env"
+	$(shell echo which rustup) || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y --no-modify-path --default-toolchain stable --profile default #& . "$(HOME)/.cargo/env"
 
 ##	install nvm sequence
 	@bash -c "curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && export NVM_DIR='$(HOME)/.nvm'; [ -s '$(NVM_DIR)/nvm.sh' ] && \. '$(NVM_DIR)/nvm.sh'; [ -s '$(NVM_DIR)/bash_completion' ] && \. '$(NVM_DIR)/bash_completion' &"
 
-	## bash -c "which autoconf                   || echo "
-	## bash -c "which automake                   || echo "
-	## bash -c "which brew                       || echo "
-	## bash -c "which cargo                      || echo "
-	## bash -c "which cmake                      || echo "
-	## bash -c "which go                         || echo "
-	## bash -c "which node                       || echo "
-	## bash -c "which rustup                     || echo "
+	bash -c "which autoconf                   || echo "
+	bash -c "which automake                   || echo "
+	bash -c "which brew                       || echo "
+	bash -c "which cargo                      || echo "
+	bash -c "which cmake                      || echo "
+	bash -c "which go                         || echo "
+	bash -c "which node                       || echo "
+	bash -c "which rustup                     || echo "
 
 .PHONY: report
 report:## 	print make variables
@@ -440,7 +447,7 @@ else
 endif
 
 tag:## 	git tag & git push
-tags: tag
+tags:tag
 ##tag
 ##	git tag $(OS)-$(OS_VERSION)-$(ARCH)-$(shell date +%s)
 	@git tag $(OS)-$(OS_VERSION)-$(ARCH)-$(shell date +%s)
@@ -456,15 +463,8 @@ nvm: ## 	nvm
 nvm-clean: ## 	nvm-clean
 	@rm -rf ~/.nvm
 
--include gnostr.mk
--include gnostr-act.mk
--include gnostr-bot.mk
--include docker.mk
--include venv.mk
--include clean.mk
 -include cargo.mk
 -include tests.mk
--include go.mk
 
 # vim: set noexpandtab:
 # vim: set setfiletype make

@@ -1738,7 +1738,7 @@ mod test {
         let content = EventV1::get_content_from_speedy_bytes(&bytes);
         assert_eq!(content, Some(&*event.content));
 
-        let re = regex::Regex::new("foodstr").unwrap();
+        let re = Regex::new("foodstr").unwrap();
         let found_foodstr = EventV1::tag_search_in_speedy_bytes(&bytes, &re).unwrap();
         assert!(found_foodstr);
 

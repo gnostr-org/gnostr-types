@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use speedy::{Context, Readable, Reader, Writable, Writer};
 use std::convert::From;
 use std::fmt;
+use std::mem::size_of;
 
 macro_rules! define_event_kinds {
     ($($comment:expr, $name:ident = $value:expr),*) => {
@@ -403,7 +404,7 @@ impl<C: Context> Writable<C> for EventKind {
 
     #[inline]
     fn bytes_needed(&self) -> Result<usize, C::Error> {
-        Ok(std::mem::size_of::<u32>())
+        Ok(size_of::<u32>())
     }
 }
 
