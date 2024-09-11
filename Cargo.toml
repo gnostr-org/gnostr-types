@@ -1,6 +1,6 @@
 [package]
 name = "gnostr-types"
-version = "0.7.3-unstable"
+version = "0.7.4-unstable"
 edition = "2021"
 authors = ["gnostr <admin@gnostr.org>", "Mike Dilger <mike@mikedilger.com>"]
 description = "Types for nostr protocol handling"
