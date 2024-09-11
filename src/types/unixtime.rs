@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "speedy")]
 use speedy::{Readable, Writable};
 use std::ops::{Add, Sub};
-use std::time::Duration;
+use std::time::{Duration, UNIX_EPOCH};
 
 /// An integer count of the number of seconds from 1st January 1970.
 /// This does not count any of the leap seconds that have occurred, it
@@ -33,7 +33,7 @@ pub struct Unixtime(pub i64);
 impl Unixtime {
     /// Get the current unixtime (depends on the system clock being accurate)
     pub fn now() -> Result<Unixtime, Error> {
-        Ok(Unixtime(std::time::UNIX_EPOCH.elapsed()?.as_secs() as i64))
+        Ok(Unixtime(UNIX_EPOCH.elapsed()?.as_secs() as i64))
     }
 
     // Mock data for testing
@@ -81,11 +81,11 @@ mod test {
     #[test]
     fn test_unixtime_math() {
         let now = Unixtime::now().unwrap();
-        let fut = now + std::time::Duration::from_secs(70);
+        let fut = now + Duration::from_secs(70);
         assert!(fut > now);
         assert_eq!(fut.0 - now.0, 70);
-        let back = fut - std::time::Duration::from_secs(70);
+        let back = fut - Duration::from_secs(70);
         assert_eq!(now, back);
-        assert_eq!(now - back, std::time::Duration::ZERO);
+        assert_eq!(now - back, Duration::ZERO);
     }
 }

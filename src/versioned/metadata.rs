@@ -1,7 +1,7 @@
 use bech32::FromBase32;
 use serde::de::{Deserialize, Deserializer, MapAccess, Visitor};
 use serde::ser::{Serialize, SerializeMap, Serializer};
-use serde_json::{json, Map, Value};
+//use serde_json::{json, Map, Value};
 use std::fmt;
 
 /// Metadata about a user
@@ -25,7 +25,7 @@ pub struct MetadataV1 {
     pub nip05: Option<String>,
 
     /// Additional fields not specified in NIP-01 or NIP-05
-    pub other: Map<String, Value>,
+    pub other: serde_json::Map<String, serde_json::Value>,
 }
 
 impl Default for MetadataV1 {
@@ -35,7 +35,7 @@ impl Default for MetadataV1 {
             about: None,
             picture: None,
             nip05: None,
-            other: Map::new(),
+            other: serde_json::Map::new(),
         }
     }
 }
@@ -48,10 +48,10 @@ impl MetadataV1 {
 
     #[allow(dead_code)]
     pub(crate) fn mock() -> MetadataV1 {
-        let mut map = Map::new();
+        let mut map = serde_json::Map::new();
         let _ = map.insert(
             "display_name".to_string(),
-            Value::String("William Caserin".to_string()),
+            serde_json::Value::String("William Caserin".to_string()),
         );
         MetadataV1 {
             name: Some("jb55".to_owned()),
@@ -93,10 +93,10 @@ impl Serialize for MetadataV1 {
         S: Serializer,
     {
         let mut map = serializer.serialize_map(Some(4 + self.other.len()))?;
-        map.serialize_entry("name", &json!(&self.name))?;
-        map.serialize_entry("about", &json!(&self.about))?;
-        map.serialize_entry("picture", &json!(&self.picture))?;
-        map.serialize_entry("nip05", &json!(&self.nip05))?;
+        map.serialize_entry("name", &serde_json::json!(&self.name))?;
+        map.serialize_entry("about", &serde_json::json!(&self.about))?;
+        map.serialize_entry("picture", &serde_json::json!(&self.picture))?;
+        map.serialize_entry("nip05", &serde_json::json!(&self.nip05))?;
         for (k, v) in &self.other {
             map.serialize_entry(&k, &v)?;
         }
@@ -126,23 +126,23 @@ impl<'de> Visitor<'de> for MetadataV1Visitor {
     where
         M: MapAccess<'de>,
     {
-        let mut map: Map<String, Value> = Map::new();
-        while let Some((key, value)) = access.next_entry::<String, Value>()? {
+        let mut map: serde_json::Map<String, serde_json::Value> = serde_json::Map::new();
+        while let Some((key, value)) = access.next_entry::<String, serde_json::Value>()? {
             let _ = map.insert(key, value);
         }
 
         let mut m: MetadataV1 = Default::default();
 
-        if let Some(Value::String(s)) = map.remove("name") {
+        if let Some(serde_json::Value::String(s)) = map.remove("name") {
             m.name = Some(s);
         }
-        if let Some(Value::String(s)) = map.remove("about") {
+        if let Some(serde_json::Value::String(s)) = map.remove("about") {
             m.about = Some(s);
         }
-        if let Some(Value::String(s)) = map.remove("picture") {
+        if let Some(serde_json::Value::String(s)) = map.remove("picture") {
             m.picture = Some(s);
         }
-        if let Some(Value::String(s)) = map.remove("nip05") {
+        if let Some(serde_json::Value::String(s)) = map.remove("nip05") {
             m.nip05 = Some(s);
         }
 
@@ -170,10 +170,10 @@ mod test {
         let json = r##"{"name":"monlovesmango","picture":"https://astral.ninja/aura/monlovesmango.svg","about":"building on nostr","nip05":"monlovesmango@astral.ninja","lud06":null,"testing":"123"}"##;
         let m: MetadataV1 = serde_json::from_str(json).unwrap();
         assert_eq!(m.name, Some("monlovesmango".to_owned()));
-        assert_eq!(m.other.get("lud06"), Some(&Value::Null));
+        assert_eq!(m.other.get("lud06"), Some(&serde_json::Value::Null));
         assert_eq!(
             m.other.get("testing"),
-            Some(&Value::String("123".to_owned()))
+            Some(&serde_json::Value::String("123".to_owned()))
         );
     }
 

@@ -24,10 +24,10 @@ impl Default for Identity {
 }
 
 // No one besides the Identity has the internal Signer, so we can safely Send
-unsafe impl Send for Identity { }
+unsafe impl Send for Identity {}
 
 // Nobody can write while someone else is reading with just a non-mutable &reference
-unsafe impl Sync for Identity { }
+unsafe impl Sync for Identity {}
 
 impl Identity {
     /// New `Identity` from a public key

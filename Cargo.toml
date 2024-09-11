@@ -1,13 +1,13 @@
 [package]
 name = "gnostr-types"
-version = "0.7.1-unstable"
+version = "0.7.2-unstable"
 edition = "2021"
-authors = ["Mike Dilger <mike@mikedilger.com>"]
+authors = ["gnostr <admin@gnostr.org>", "Mike Dilger <mike@mikedilger.com>"]
 description = "Types for nostr protocol handling"
 repository = "https://github.com/gnostr-org/gnostr-types"
 documentation = "https://docs.rs/gnostr-types"
 readme = "README.md"
-keywords = [ "nostr", "gnostr" ]
+keywords = ["nostr", "gnostr"]
 license = "MIT"
 
 [features]
@@ -18,8 +18,8 @@ aes = "0.8"
 base64 = "0.21"
 bech32 = "0.9"
 cbc = { version = "0.1", features = [ "std" ] }
-chacha20poly1305 = "0.10"
 chacha20 = "0.9"
+chacha20poly1305 = "0.10"
 core-net = "0.1"
 derive_more = "0.99"
 hex = "0.4"
@@ -29,18 +29,18 @@ inout = "0.1.3"
 lazy_static = "1.4"
 lightning-invoice = "0.23"
 linkify = "0.9"
-nip44 = { package = "gnip44", git = "https://github.com/gnostr-org/gnip44", version="0.1.1" }
+nip44 = { package = "gnip44", git = "https://github.com/gnostr-org/gnip44", version = "0.1.1" }
 num_cpus = "1"
 pbkdf2 = { version = "0.12", default-features = false, features = [ "hmac", "sha2", "std" ] }
-rand_core = "0.6"
 rand = "0.8"
+rand_core = "0.6"
 regex = "1.8"
 scrypt = "0.11"
 secp256k1 = { version = "0.28", features = [ "hashes", "global-context", "rand-std", "serde" ] }
 serde = { version = "1.0", features = [ "derive" ] }
 serde_json = "1.0"
 sha2 = "0.10"
-speedy = { git = "https://github.com/gnostr-org/speedy", version="0.8.6", optional = true }
+speedy = { git = "https://github.com/gnostr-org/speedy", version = "0.8.6", optional = true }
 thiserror = "1.0"
 thread-priority = "0.13"
 url = "2.4"
